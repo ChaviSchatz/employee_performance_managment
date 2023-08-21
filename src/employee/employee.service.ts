@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Employee, EmployeeDocument } from '../schemas/employee.schema';
+import { CreateEmployeeDTO } from './create-employee.dto';
 
 @Injectable()
 export class EmployeeService {
@@ -9,7 +10,7 @@ export class EmployeeService {
     @InjectModel(Employee.name) private employeeModel: Model<EmployeeDocument>,
   ) {}
 
-  async create(employeeData: Employee): Promise<Employee> {
+  async create(employeeData: CreateEmployeeDTO): Promise<Employee> {
     const createdEmployee = new this.employeeModel(employeeData);
     return createdEmployee.save();
   }
@@ -26,7 +27,7 @@ export class EmployeeService {
     return employee;
   }
 
-  async update(id: string, employeeData: Employee): Promise<Employee> {
+  async update(id: string, employeeData: CreateEmployeeDTO): Promise<Employee> {
     const updatedEmployee = await this.employeeModel
       .findByIdAndUpdate(id, employeeData, { new: true })
       .exec();

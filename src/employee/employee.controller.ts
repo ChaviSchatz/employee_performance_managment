@@ -8,32 +8,32 @@ import {
     Param,
   } from '@nestjs/common';
   import { EmployeeService } from './employee.service';
-  import { Employee } from '../schemas/employee.schema';
+import { CreateEmployeeDTO } from './create-employee.dto';
   
   @Controller('employees')
   export class EmployeeController {
     constructor(private readonly employeeService: EmployeeService) {}
   
     @Post()
-    async create(@Body() employeeData: Employee): Promise<Employee> {
+    async create(@Body() employeeData: CreateEmployeeDTO){
       return this.employeeService.create(employeeData);
     }
   
     @Get()
-    async findAll(): Promise<Employee[]> {
+    async findAll() {
       return this.employeeService.findAll();
     }
   
     @Get(':id')
-    async findOne(@Param('id') id: string): Promise<Employee> {
+    async findOne(@Param('id') id: string) {
       return this.employeeService.findOne(id);
     }
   
     @Put(':id')
     async update(
       @Param('id') id: string,
-      @Body() employeeData: Employee,
-    ): Promise<Employee> {
+      @Body() employeeData: CreateEmployeeDTO,
+    ): Promise<CreateEmployeeDTO> {
       return this.employeeService.update(id, employeeData);
     }
   
