@@ -6,6 +6,7 @@ import {
     Delete,
     Body,
     Param,
+    Query,
 } from '@nestjs/common';
 import { ObservationService } from './observation.service'
 import { CreateObservationDTO } from './create-observation.dto';
@@ -18,6 +19,17 @@ export class ObservationController {
         return this.observationService.create(observationData);
     }
 
+
+    @Get()
+    async getObservationsByQuery(@Query() conditions: any) {    
+        // ugly code!!! 
+        // check what is the correct way to write it.    
+     if (Object.keys(conditions).length === 0){
+        return this.findAll();
+     }
+       const observations = await this.observationService.filterObservationsByQuery(conditions);
+       return observations;
+     }
     @Get()
     async findAll() {
         return this.observationService.findAll();
@@ -27,7 +39,8 @@ export class ObservationController {
     async findOne(@Param('id') id: string) {
         return this.observationService.findOne(id);
     }
-
+  
+      
     @Put(':id')
     async update(
         @Param('id') id: string,

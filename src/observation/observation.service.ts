@@ -21,6 +21,15 @@ export class ObservationService {
     return createdObservation.save();
   }
 
+  async filterObservationsByQuery(query: any): Promise<Observation[]> {
+    const conditions = Object.keys(query).filter((key) => query[key] !== "");
+  
+    return this.observationModel.find({
+      "$and": conditions.map((condition) => ({ [condition]: query[condition] })),
+    }).exec();
+  }
+  
+
   async findAll(): Promise<Observation[]> {
     return this.observationModel.find().exec();
   }

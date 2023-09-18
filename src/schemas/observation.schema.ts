@@ -15,7 +15,7 @@ export class Observation {
   @Prop({ required: true })
   date: Date
   @Prop()
-  class: String
+  class_id: String
 
 }
 

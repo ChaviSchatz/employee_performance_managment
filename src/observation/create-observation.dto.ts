@@ -2,5 +2,5 @@ export class CreateObservationDTO{
     employee_id: String
     proper: Boolean
     date: Date
-    class: String
+    class_id: String
 }
