@@ -4,12 +4,17 @@ import { AppService } from './app.service';
 import { EmployeeModule } from './employee/employee.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AttendanceModule } from './attendance/attendance.module';
+import { ObservationModule } from './observation/observation.moudle';
+import { ClassModule } from './class/class.moudle';
+
 @Module({
-  imports: [ 
-     MongooseModule.forRoot('mongodb://127.0.0.1:27017/test'),
-     EmployeeModule,
-     AttendanceModule],
+  imports: [
+    ObservationModule,
+    EmployeeModule,
+    ClassModule,
+    AttendanceModule,
+    MongooseModule.forRoot('mongodb+srv://AvigailMintz:324947977@cluster0.dlu3tcy.mongodb.net/test')],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
