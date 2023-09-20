@@ -1,20 +1,20 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { Observation, ObservationDocument } from 'src/schemas/observation.schema';
 import { CreateObservationDTO } from './create-observation.dto';
 @Injectable()
 export class ObservationService {
   constructor(
     @InjectModel(Observation.name) private observationModel: Model<ObservationDocument>,
-  ) {}
+  ) { }
 
   async create(observationData: any): Promise<Observation> {
-    const newObservation ={
-        employee_id: observationData.employee_id,
-        proper:observationData.proper,
-        date: new Date(observationData.date),
-        class: observationData.class
+    const newObservation = {
+      employee_id: observationData.employee_id,
+      proper: observationData.proper,
+      date: new Date(observationData.date),
+      class: observationData.class
     }
 
     const createdObservation = new this.observationModel(newObservation);
@@ -23,12 +23,12 @@ export class ObservationService {
 
   async filterObservationsByQuery(query: any): Promise<Observation[]> {
     const conditions = Object.keys(query).filter((key) => query[key] !== "");
-  
+
     return this.observationModel.find({
       "$and": conditions.map((condition) => ({ [condition]: query[condition] })),
     }).exec();
   }
-  
+
 
   async findAll(): Promise<Observation[]> {
     return this.observationModel.find().exec();
@@ -37,8 +37,9 @@ export class ObservationService {
   async findOne(id: string): Promise<Observation> {
     const observation = await this.observationModel.findById(id).exec();
     if (!observation) {
-      throw new NotFoundException(`Observation with ID ${id} not found`);
-    }
+      throw new HttpException(`Observation with ID ${id} not found`, HttpStatus.NOT_FOUND)
+
+    } 
     return observation;
   }
 
@@ -47,7 +48,7 @@ export class ObservationService {
       .findByIdAndUpdate(id, observationData, { new: true })
       .exec();
     if (!updatedObservation) {
-      throw new NotFoundException(`Observation with ID ${id} not found`);
+      throw new HttpException(`Observation with ID ${id} not found`, HttpStatus.NOT_FOUND)
     }
     return updatedObservation;
   }
@@ -55,7 +56,7 @@ export class ObservationService {
   async remove(id: string): Promise<void> {
     const result = await this.observationModel.deleteOne({ _id: id }).exec();
     if (result.deletedCount === 0) {
-      throw new NotFoundException(`Observation with ID ${id} not found`);
+      throw new HttpException(`Observation with ID ${id} not found`, HttpStatus.NOT_FOUND)
     }
   }
 }
