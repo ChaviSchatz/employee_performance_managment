@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Attendance, AttendanceDocument } from 'src/schemas/attendance.schema';
@@ -19,7 +19,7 @@ export class AttendanceService {
     ///to change to one access to db.
     const attendance = await this.attendanceModel.findById(id).exec();
     if (!attendance) {
-      throw new NotFoundException(`Attendance with ID ${id} not found`);
+      throw new HttpException(`Attendence with ID ${id} not found`, HttpStatus.NOT_FOUND);
     }
     out_time = new Date(out_time)
     console.log("in_time: ", attendance.in_time.getTime(), "out_time: ", out_time)
@@ -42,7 +42,7 @@ export class AttendanceService {
   async findOne(id: string): Promise<Attendance> {
     const attendance = await this.attendanceModel.findById(id).exec();
     if (!attendance) {
-      throw new NotFoundException(`Attendance with ID ${id} not found`);
+      throw new HttpException(`Attendence with ID ${id} not found`, HttpStatus.NOT_FOUND);
     }
     return attendance;
   }
@@ -52,7 +52,7 @@ export class AttendanceService {
       .findByIdAndUpdate(id, attendanceData, { new: true })
       .exec();
     if (!updatedAttendance) {
-      throw new NotFoundException(`attendance with ID ${id} not found`);
+      throw new HttpException(`Attendence with ID ${id} not found`, HttpStatus.NOT_FOUND);
     }
     return updatedAttendance;
   }
@@ -60,7 +60,7 @@ export class AttendanceService {
   async remove(id: string): Promise<void> {
     const result = await this.attendanceModel.deleteOne({ _id: id }).exec();
     if (result.deletedCount === 0) {
-      throw new NotFoundException(`Attendance with ID ${id} not found`);
+      throw new HttpException(`Attendence with ID ${id} not found`, HttpStatus.NOT_FOUND);
     }
   }
 }
