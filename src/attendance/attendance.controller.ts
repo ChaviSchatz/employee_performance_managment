@@ -6,10 +6,13 @@ import {
     Delete,
     Body,
     Param,
+    UseGuards,
   } from '@nestjs/common';
   import { AttendanceService } from './attendance.service';
 import { CreateAttendanceDTO, Logout } from './create-attendance-dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('attendance')
 export class AttendanceController {
     constructor(private readonly attendanceService: AttendanceService) {}

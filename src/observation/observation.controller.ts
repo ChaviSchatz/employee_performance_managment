@@ -7,9 +7,14 @@ import {
     Body,
     Param,
     Query,
+    UseGuards
 } from '@nestjs/common';
 import { ObservationService } from './observation.service'
 import { CreateObservationDTO } from './create-observation.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+
+@UseGuards(JwtAuthGuard)
 @Controller('observations')
 export class ObservationController {
     constructor(private readonly observationService: ObservationService) { }
@@ -18,7 +23,6 @@ export class ObservationController {
     async create(@Body() observationData: CreateObservationDTO) {
         return this.observationService.create(observationData);
     }
-
 
     @Get()
     async getObservationsByQuery(@Query() conditions: any) {    
