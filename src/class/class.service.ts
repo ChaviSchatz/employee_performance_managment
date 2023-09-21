@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ClassDocument, Class } from '../schemas/class.schema';
@@ -15,7 +15,12 @@ export class ClassService {
   }
 
   async getClassById(id: string): Promise<Class | null> {
-    return await this.classModel.findById(id).exec();
+    const foundClass =  await this.classModel.findById(id).exec();
+    if (!foundClass){
+      throw new HttpException(`Class with ID ${id} not found`, HttpStatus.NOT_FOUND);
+
+    }
+    return foundClass
   }
 
   async createClass(classDto: CreateClassDTO): Promise<Class> {
@@ -27,6 +32,10 @@ export class ClassService {
     const updatedClass = await this.classModel.findByIdAndUpdate(id, classDto, {
       new: true,
     }).exec();
+    if (!updatedClass){
+      throw new HttpException(`Class with ID ${id} not found`, HttpStatus.NOT_FOUND);
+
+    }
     return updatedClass;
   }
 

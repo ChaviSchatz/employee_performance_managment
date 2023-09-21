@@ -25,9 +25,7 @@ export class ObservationController {
     }
 
     @Get()
-    async getObservationsByQuery(@Query() conditions: any) {    
-        // ugly code!!! 
-        // check what is the correct way to write it.    
+    async getObservationsByQuery(@Query() conditions: any) {        
      if (Object.keys(conditions).length === 0){
         return this.findAll();
      }

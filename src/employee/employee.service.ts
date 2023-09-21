@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Employee, EmployeeDocument } from '../schemas/employee.schema';
@@ -22,7 +22,7 @@ export class EmployeeService {
   async findOne(id: string): Promise<Employee> {
     const employee = await this.employeeModel.findById(id).exec();
     if (!employee) {
-      throw new NotFoundException(`Employee with ID ${id} not found`);
+      throw new HttpException(`Employee with ID ${id} not found`, HttpStatus.NOT_FOUND)
     }
     return employee;
   }
@@ -32,7 +32,7 @@ export class EmployeeService {
       .findByIdAndUpdate(id, employeeData, { new: true })
       .exec();
     if (!updatedEmployee) {
-      throw new NotFoundException(`Employee with ID ${id} not found`);
+      throw new HttpException(`Employee with ID ${id} not found`, HttpStatus.NOT_FOUND)
     }
     return updatedEmployee;
   }
@@ -40,7 +40,7 @@ export class EmployeeService {
   async remove(id: string): Promise<void> {
     const result = await this.employeeModel.deleteOne({ _id: id }).exec();
     if (result.deletedCount === 0) {
-      throw new NotFoundException(`Employee with ID ${id} not found`);
+      throw new HttpException(`Employee with ID ${id} not found`, HttpStatus.NOT_FOUND)
     }
   }
 }
